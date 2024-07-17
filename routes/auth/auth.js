@@ -2,56 +2,92 @@ const express = require('express');
 const userTemplate = require('../../models/user');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
+const hbs = require('nodemailer-express-handlebars');
+const path = require('path');
+
+
 
 const router = express.Router();
 
 
+// Configure Handlebars options
+const handlebarOptions = {
+    viewEngine: {
+        extName: '.hbs',
+        partialsDir: path.resolve('./emailTemps/'),
+        defaultLayout: false
+    },
+    viewPath: path.resolve('./emailTemps/'),
+    extName: '.hbs'
+};
+
 
 // async..await is not allowed in global scope, must use a wrapper
-const sendEmail = async () => {
+const sendEmail = async (userName, email) => {
 
-    const transport = nodemailer.createTransport({
+    var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
         port: 587,
-        secure: false,
         auth: {
             user: "api",
-            pass: "a3aec3bcb5b43a850a99b571593d873d"
+            pass: "d633904fa3a5130623dd7d9404bf637f"
         }
     });
 
-    // send mail with defined transport object
-    const info = await transport.sendMail({
-        from: 'info@demomailtrap.com', // sender address
-        to: "floathhub@gmail.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
-    });
-
-    console.log("Message sent: %s", info.messageId);
-    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
-}
-
-router.post('/signup', async (req, res) => {
-    const { fullName, userName, email, password } = req.body;
-    let newUser = new userTemplate({
-        fullName,
-        userName,
-        email,
-        password: await bcrypt.hash(password,10)
-    })
+    transport.use('compile', hbs(handlebarOptions));
 
     try {
-        newUser.save()
-        .then(user => res.status(200).json({message : 'User Created', status:true}))
-        .catch(err =>res.json({message:err}))
-        
+        const info = await transport.sendMail({
+            from: '"wok9ja 👻" <info@floatsolutionhub.com>', // sender address
+            to: email, // list of receivers
+            subject: "Welcome on board!", // Subject line
+            template: 'welcome', // the name of the template file (without extension)
+            context: { // the data to be passed to the template
+                fullName: userName
+            },
+
+        });
+
+        console.log('Message sent: %s', info.messageId);
     } catch (error) {
-        
+        console.error('Error sending email:', error);
+    }
+}
+
+
+
+
+router.post('/register', async (req, res) => {
+    const { fullName, userName, email, password } = req.body;
+
+    try {
+        // Check if the user already exists
+        const existingUser = await userTemplate.findOne({ $or: [{ email }, { userName }] });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User already exists', status: false });
+        }
+
+        // Create a new user
+        const hashedPassword = await bcrypt.hash(password, 10);
+        let newUser = new userTemplate({
+            fullName,
+            userName,
+            email,
+            password: hashedPassword
+        });
+
+        // Save the new user to the database
+        await newUser.save();
+        res.status(200).json({ message: 'User Created', status: true });
+
+        // Optionally send an email here
+        sendEmail(fullName, email)
+
+    } catch (error) {
+
     }
 
-    })
+})
 
 router.get('/login', (req, res) => {
 
