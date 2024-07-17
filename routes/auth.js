@@ -80,7 +80,7 @@ router.post('/register', async (req, res) => {
 
         // Save the new user to the database
         await newUser.save();
-        res.status(200).json({ message: 'User Created', status: true });
+        res.status(200).json({ message: 'User Created', success: true });
 
         // Optionally send an email here
         sendEmail(fullName, email)
