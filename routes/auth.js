@@ -1,9 +1,11 @@
 const express = require('express');
-const userTemplate = require('../../models/user');
+const userTemplate = require('../models/user');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
+
+const { loginUser } = require('../services/authController');
 
 
 
@@ -38,7 +40,7 @@ const sendEmail = async (userName, email) => {
 
     try {
         const info = await transport.sendMail({
-            from: '"wok9ja 👻" <info@floatsolutionhub.com>', // sender address
+            from: '"Wok9ja" <info@floatsolutionhub.com>', // sender address
             to: email, // list of receivers
             subject: "Welcome on board!", // Subject line
             template: 'welcome', // the name of the template file (without extension)
@@ -48,7 +50,7 @@ const sendEmail = async (userName, email) => {
 
         });
 
-        console.log('Message sent: %s', info.messageId);
+        // console.log('Message sent: %s', info.messageId);
     } catch (error) {
         console.error('Error sending email:', error);
     }
@@ -89,9 +91,7 @@ router.post('/register', async (req, res) => {
 
 })
 
-router.get('/login', (req, res) => {
-
-});
+router.post('/login',loginUser);
 
 
 module.exports = router;
