@@ -6,6 +6,8 @@ const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 
 const { loginUser } = require('../services/authController');
+const { createToDo, getUserTodos, getAllTodos } = require('../services/todoServices');
+
 
 
 
@@ -91,7 +93,8 @@ router.post('/register', async (req, res) => {
 
 })
 
-router.post('/login',loginUser);
+router.post('/login', loginUser);
+router.post('/create-todo', createToDo);
 
 
 module.exports = router;
