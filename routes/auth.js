@@ -28,7 +28,7 @@ const handlebarOptions = {
 
 // async..await is not allowed in global scope, must use a wrapper
 const sendEmail = async (userName, email) => {
-
+console.log({email :"sent!"})
     var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
         port: 587,
