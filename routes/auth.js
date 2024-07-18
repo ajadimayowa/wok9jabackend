@@ -34,7 +34,7 @@ console.log({email :"sent!"})
         port: 587,
         auth: {
             user: "api",
-            pass: process.env.API_KEY_EMAIL
+            pass: "d633904fa3a5130623dd7d9404bf637f"
         }
     });
 
