@@ -7,7 +7,7 @@ const path = require('path');
 
 const { loginUser } = require('../services/authController');
 const { createToDo, getUserTodos, getAllTodos } = require('../services/todoServices');
-
+const emailAPIKEY = require('../server');
 
 
 
@@ -34,14 +34,14 @@ const sendEmail = async (userName, email) => {
         port: 587,
         auth: {
             user: "api",
-            pass: "d633904fa3a5130623dd7d9404bf637f"
+            pass: process.env.API_KEY_EMAIL
         }
     });
 
     transport.use('compile', hbs(handlebarOptions));
 
     try {
-        const info = await transport.sendMail({
+        transport.sendMail({
             from: '"Wok9ja" <info@floatsolutionhub.com>', // sender address
             to: email, // list of receivers
             subject: "Welcome on board!", // Subject line
@@ -81,11 +81,13 @@ router.post('/register', async (req, res) => {
         });
 
         // Save the new user to the database
-        await newUser.save();
-        res.status(200).json({ message: 'User Created', success: true });
+        await newUser.save().then(()=>{
+            sendEmail(fullName, email);
+            res.status(200).json({ message: 'User Created', success: true })
+        }).catch(err=>res.json({message:'Error creating user',success:false}));
 
         // Optionally send an email here
-        sendEmail(fullName, email)
+        
 
     } catch (error) {
 

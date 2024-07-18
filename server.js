@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT;
+
+const PORT = process.env.PORT || 5050;
+const jwtSecret = process.env.JWT_SECRET;
+const emailAPIKEY = process.env.API_KEY_EMAIL
 
 const authRoutes = require('./routes/auth');
 const todoRoutes = require('./routes/todoRoutes');
@@ -8,7 +11,7 @@ const todoRoutes = require('./routes/todoRoutes');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const jwtSecret = process.env.JWT_SECRET
+
 
 const ENVIROMENT = process.env.ENVIROMENT
 
@@ -36,7 +39,5 @@ app.use('/api', todoRoutes);
 
 
 
-
-app.listen(port, ()=>console.log('Server up!'));
-
-module.exports = {jwtSecret}
+app.listen(process.env.PORT, ()=>console.log('Server up!'));
+module.exports = {jwtSecret,emailAPIKEY}
