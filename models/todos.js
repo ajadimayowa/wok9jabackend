@@ -20,11 +20,11 @@ const todoTemplate = new mongoose.Schema({
     actualCost: {
         type: String,
     },
-    usersEmail: {
-        type: String,
+    users: {
+        type: [String],
         required: true
     },
-    userName: {
+    username: {
         type: String,
         required: true
     },

@@ -12,12 +12,12 @@ const loginUser = async (req, res) => {
     try {
         const user = await userTemplate.findOne({$or:[{email},{userName}] });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials',success:false });
+            return res.status(409).json({ message: 'Invalid credentials',success:false, status : 409 });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials', success:false });
+            return res.status(400).json({ message: 'Invalid credentials', success:false, status : 400 });
         }
 
         const payload = { user: { id: user.id } };
@@ -26,23 +26,23 @@ const loginUser = async (req, res) => {
             if (err) throw err;
             res.status(200).json(
                 {
-                    payload: {
-                        data: {
+                    data: {
+                        payload: {
                             userName: user.userName,
                             email: user.email,
                             fullName: user.fullName
                         },
-                        success: true,
-                        userToken: token,
+                       userToken : token
                     },
                     status: 200,
-                    message: 'Login Succesfull!'
+                    success : true,
+                    message: 'Login Succesful!'
                 }
             );
         });
 
     } catch (error) {
-        console.error(error.message);
+        // console.error(error.message);
         res.status(500).send({payload:{message:'Server error',success:false, status:500}});
     }
 };

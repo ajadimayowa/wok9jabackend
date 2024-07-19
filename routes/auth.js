@@ -28,7 +28,7 @@ const handlebarOptions = {
 
 // async..await is not allowed in global scope, must use a wrapper
 const sendEmail = async (userName, email) => {
-console.log({email :"sent!"})
+    console.log({ email: "sent!" })
     var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
         port: 587,
@@ -68,7 +68,7 @@ router.post('/register', async (req, res) => {
         // Check if the user already exists
         const existingUser = await userTemplate.findOne({ $or: [{ email }, { userName }] });
         if (existingUser) {
-            return res.status(400).json({ message: 'User already exists', status: false });
+            return res.status(409).json({ message: 'User already exists', success: false, status: 409 });
         }
 
         // Create a new user
@@ -80,17 +80,17 @@ router.post('/register', async (req, res) => {
             password: hashedPassword
         });
 
-        // Save the new user to the database
-        await newUser.save().then(()=>{
+        // Save the new user to the databases
+        await newUser.save().then(() => {
             sendEmail(fullName, email);
-            res.status(200).json({ message: 'User Created', success: true })
-        }).catch(err=>res.json({message:'Error creating user',success:false}));
+            res.status(200).json({ message: 'User Created', success: true, status: 200 })
+        }).catch(err => res.status(400).json({ message: 'Error creating user', success: false }));
 
         // Optionally send an email here
-        
+
 
     } catch (error) {
-
+        res.status(400).json({ message: error.message, success: false, status: 400 })
     }
 
 })
