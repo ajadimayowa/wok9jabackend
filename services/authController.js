@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 
 
 const loginUser = async (req, res) => {
+    console.log({requestFrom :req.body})
     const jwtSecret = process.env.JWT_SECRET
     const { email, password,userName } = req.body;
 
