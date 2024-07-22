@@ -9,8 +9,9 @@ const authRoutes = require('./routes/auth');
 const todoRoutes = require('./routes/todoRoutes');
 
 const mongoose = require('mongoose');
-const cors = require('cors');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 
 
 const ENVIROMENT = process.env.ENVIROMENT
