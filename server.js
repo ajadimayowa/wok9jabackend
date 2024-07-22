@@ -40,5 +40,5 @@ app.use('/api', todoRoutes);
 
 
 
-app.listen(process.env.PORT, ()=>console.log('Server up!', `running on : ${PORT}`));
+app.listen(5050, ()=>console.log('Server up!', `running on : ${PORT}`));
 module.exports = {jwtSecret,emailAPIKEY}
