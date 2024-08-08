@@ -15,14 +15,26 @@ const userTemplate = new mongoose.Schema({
         required: true
     },
 
+    phoneNumber : {
+        type:String,
+        required: true
+    },
+otpCode : {
+    type:String,
+    required:true
+},
     password: {
         type: String,
         required: true
     },
+    isVerified: {
+        type: Boolean,
+        required: true
+    },
 
-    dateTime : {
-        type : Date,
-        default : Date.now()
+    dateTime: {
+        type: Date,
+        default: Date.now()
     }
 
 })

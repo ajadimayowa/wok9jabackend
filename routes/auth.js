@@ -8,6 +8,7 @@ const path = require('path');
 const { loginUser } = require('../services/authController');
 const { createToDo, getUserTodos, getAllTodos } = require('../services/todoServices');
 const emailAPIKEY = require('../server');
+const otpGenerator = require('../src/utils/utils');
 
 
 
@@ -27,7 +28,7 @@ const handlebarOptions = {
 
 
 // async..await is not allowed in global scope, must use a wrapper
-const sendEmail = async (userName, email) => {
+const sendEmail = async (userName, email,otpCode) => {
     console.log({ email: "sent!" })
     var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
@@ -45,9 +46,10 @@ const sendEmail = async (userName, email) => {
             from: '"Wok9ja" <info@floatsolutionhub.com>', // sender address
             to: email, // list of receivers
             subject: "Welcome on board!", // Subject line
-            template: 'welcome', // the name of the template file (without extension)
+            template: 'verification', // the name of the template file (without extension)
             context: { // the data to be passed to the template
-                fullName: userName
+                fullName: userName,
+                verificationCode: otpCode,
             },
 
         });
@@ -62,7 +64,8 @@ const sendEmail = async (userName, email) => {
 
 
 router.post('/register', async (req, res) => {
-    const { fullName, userName, email, password } = req.body;
+    const { fullName, userName, email, password, phoneNumber } = req.body;
+    console.log('signing up :', req.body)
 
     try {
         // Check if the user already exists
@@ -73,16 +76,20 @@ router.post('/register', async (req, res) => {
 
         // Create a new user
         const hashedPassword = await bcrypt.hash(password, 10);
+        let code = otpGenerator()
         let newUser = new userTemplate({
             fullName,
             userName,
             email,
+            phoneNumber,
+            isVerified:false,
+            otpCode:code,
             password: hashedPassword
         });
-
+console.log({saving:fullName,otp:code,email:email})
         // Save the new user to the databases
         await newUser.save().then(() => {
-            sendEmail(fullName, email);
+            sendEmail(fullName, email, code);
             res.status(200).json({ message: 'User Created', success: true, status: 200 })
         }).catch(err => res.status(400).json({ message: 'Error creating user', success: false }));
 

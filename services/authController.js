@@ -2,11 +2,12 @@ const mongoose = require('mongoose');
 const userTemplate = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const otpGen = require('../src/utils/utils')
 
 
 
 const loginUser = async (req, res) => {
-    // console.log({requestFrom :req.body})
+    console.log({requestFrom :req.body, userOtp: otpGen()});
     const jwtSecret = process.env.JWT_SECRET
     const { email, password,userName } = req.body;
 

@@ -19,7 +19,7 @@ const ENVIROMENT = process.env.ENVIROMENT
 
 let URL = "";
 
-ENVIROMENT == 'development'?URL = process.env.DATABASE_URL : URL = process.env.DATABASE_URL
+ENVIROMENT == 'development'? URL = process.env.DATABASE_URL : URL = process.env.DATABASE_URL
 
 dotenv.config()
 app.use(express.json());
