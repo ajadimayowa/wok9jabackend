@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 8080;
 const jwtSecret = process.env.JWT_SECRET;
 const emailAPIKEY = process.env.API_KEY_EMAIL
 
@@ -45,5 +45,5 @@ app.use('/api', serviceRoutes);
 
 
 
-app.listen(5050, () => console.log('Server up!', `running on : ${PORT}`));
+app.listen(8080, () => console.log('Server up!', `running on : ${PORT}`));
 module.exports = { jwtSecret, emailAPIKEY }
