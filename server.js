@@ -45,5 +45,5 @@ app.use('/api', serviceRoutes);
 
 
 
-app.listen(8080, () => console.log('Server up!', `running on : ${PORT}`));
+app.listen(PORT, () => console.log('Server up!', `running on : ${PORT}`));
 module.exports = { jwtSecret, emailAPIKEY }
