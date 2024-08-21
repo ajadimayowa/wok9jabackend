@@ -1,14 +1,13 @@
 const express = require('express');
-const userTemplate = require('../models/user');
+const userTemplate = require('../../../models/user');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 
-const { loginUser } = require('../services/authController');
-const { createToDo, getUserTodos, getAllTodos } = require('../services/todoServices');
-const emailAPIKEY = require('../server');
-const otpGenerator = require('../src/utils/utils');
+const { loginUser,verifyOtp } = require('../contollers/authController');
+const emailAPIKEY = require('../../../server');
+const otpGenerator = require('../../utils/utils');
 
 
 
@@ -28,7 +27,7 @@ const handlebarOptions = {
 
 
 // async..await is not allowed in global scope, must use a wrapper
-const sendEmail = async (userName, email,otpCode) => {
+const sendEmail = async (userName, email, otpCode) => {
     console.log({ email: "sent!" })
     var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
@@ -65,7 +64,7 @@ const sendEmail = async (userName, email,otpCode) => {
 
 router.post('/register', async (req, res) => {
     const { fullName, userName, email, password, phoneNumber } = req.body;
-    console.log('signing up :', req.body)
+    // console.log('signing up :', req.body)
 
     try {
         // Check if the user already exists
@@ -82,11 +81,11 @@ router.post('/register', async (req, res) => {
             userName,
             email,
             phoneNumber,
-            isVerified:false,
-            otpCode:code,
+            isVerified: false,
+            otpCode: code,
             password: hashedPassword
         });
-console.log({saving:fullName,otp:code,email:email})
+        console.log({saving:fullName,otp:code,email:email})
         // Save the new user to the databases
         await newUser.save().then(() => {
             sendEmail(fullName, email, code);
@@ -102,8 +101,7 @@ console.log({saving:fullName,otp:code,email:email})
 
 })
 
+router.post('/verify-otp', verifyOtp);
 router.post('/login', loginUser);
-router.post('/create-todo', createToDo);
-
 
 module.exports = router;

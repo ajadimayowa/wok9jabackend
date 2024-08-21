@@ -15,14 +15,13 @@ const userTemplate = new mongoose.Schema({
         required: true
     },
 
-    phoneNumber : {
-        type:String,
+    phoneNumber: {
+        type: String,
         required: true
     },
-otpCode : {
-    type:String,
-    required:true
-},
+    otpCode: {
+        type: String,
+    },
     password: {
         type: String,
         required: true
@@ -31,7 +30,28 @@ otpCode : {
         type: Boolean,
         required: true
     },
-
+    walletBalance: { type: Number },
+    messages: {
+        type: String
+    },
+    gigs: {
+        type: [String],
+    },
+   
+    idType: { type: String },
+    userNin: { type: String },
+    identifiCationDoc: { type: String },
+    officeAddress: {
+        type: String
+    },
+    secondaryAddress : {
+        type:String
+    },
+    profilePicture: {
+        type: String
+    },
+    
+    
     dateTime: {
         type: Date,
         default: Date.now()
