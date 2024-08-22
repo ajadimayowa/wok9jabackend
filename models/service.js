@@ -9,17 +9,25 @@ const ServiceSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    icon : {
+        type:String,
+        required:true
+    },
+    createdBy:{
+        type:String,
+        required:true
+    },
     providers : {
         type : [String],
-        require:true
+        required:true
     },
     category :{
         type:String,
-        require : true
+        required : true
     },
     basic: {
         type: Boolean,
-        require:true
+        required:true
     },
     dateTime : {
         type:Date,
