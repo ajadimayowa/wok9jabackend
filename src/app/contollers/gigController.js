@@ -1,28 +1,29 @@
 const GigModel = require('../../../models/Gig');
 
 const createNewGig = async (req, res) => {
+    console.log({userSend:req.body})
     const {
-        userId, 
-        gigTitle, 
-        gigDescription, 
-        userAddress, 
-        fullName, 
+        title,
+        creatorId,
+        description, 
+        creatorOfficeAddress, 
+        creatorFullName, 
         phoneNumber, 
-        serviceCategory, 
-        basePrice
+        category, 
+        price,
     } = req.body;
 
     try {
         const newGig = new GigModel({
-            title: gigTitle,
-            description: gigDescription,
+            gigTitle:title,
+            gigDescription:description,
             gigImages: ['a', 'b'], // Ideally, these should be dynamic or removed if not needed.
-            serviceCategory: serviceCategory,
-            price: basePrice,
-            creatorFullName: fullName,
+            gigCategory:category,
+            price: price,
+            creatorFullName: creatorFullName,
             creatorPhoneNumber: phoneNumber,
-            creatorOfficeAddress: userAddress,
-            creatorId: userId,
+            creatorOfficeAddress: creatorOfficeAddress,
+            creatorId: creatorId,
         });
 
         await newGig.save();

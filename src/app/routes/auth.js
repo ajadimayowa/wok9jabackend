@@ -6,8 +6,6 @@ const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 
 const { loginUser,verifyOtp } = require('../contollers/authController');
-const emailAPIKEY = require('../../../server');
-const otpGenerator = require('../../utils/utils');
 
 
 
@@ -27,7 +25,7 @@ const handlebarOptions = {
 
 
 // async..await is not allowed in global scope, must use a wrapper
-const sendEmail = async (userName, email, otpCode) => {
+const sendEmail = async (userName, email, otpCode,verificationLink) => {
     console.log({ email: "sent!" })
     var transport = nodemailer.createTransport({
         host: "live.smtp.mailtrap.io",
@@ -49,6 +47,7 @@ const sendEmail = async (userName, email, otpCode) => {
             context: { // the data to be passed to the template
                 fullName: userName,
                 verificationCode: otpCode,
+                verificationLink:verificationLink
             },
 
         });
@@ -63,7 +62,7 @@ const sendEmail = async (userName, email, otpCode) => {
 
 
 router.post('/register', async (req, res) => {
-    const { fullName, userName, email, password, phoneNumber } = req.body;
+    const { fullName, userName, email, password, phoneNumber,otpCode,verificationLink} = req.body;
     // console.log('signing up :', req.body)
 
     try {
@@ -75,22 +74,22 @@ router.post('/register', async (req, res) => {
 
         // Create a new user
         const hashedPassword = await bcrypt.hash(password, 10);
-        let code = otpGenerator()
         let newUser = new userTemplate({
             fullName,
             userName,
             email,
             phoneNumber,
             isVerified: false,
-            otpCode: code,
+            verificationLink,
+            otpCode,
             password: hashedPassword
         });
-        console.log({saving:fullName,otp:code,email:email})
+        // console.log({saving:fullName,otp:otpCode,email:email,verifLink:verificationLink})
         // Save the new user to the databases
         await newUser.save().then(() => {
-            sendEmail(fullName, email, code);
             res.status(200).json({ message: 'User Created', success: true, status: 200 })
-        }).catch(err => res.status(400).json({ message: 'Error creating user', success: false }));
+            sendEmail(fullName, email, otpCode,verificationLink);
+        }).catch(err => res.status(400).json({ message: `Error creating user : ${err}`, success: false}));
 
         // Optionally send an email here
 

@@ -22,6 +22,9 @@ const userTemplate = new mongoose.Schema({
     otpCode: {
         type: String,
     },
+    verificationLink:{
+        type:String,
+        required:true},
     password: {
         type: String,
         required: true

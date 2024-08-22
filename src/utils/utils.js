@@ -3,4 +3,8 @@ let otpGenerator = () => {
     return otp
 }
 
-module.exports = otpGenerator;
+
+
+
+
+module.exports = {otpGenerator};
