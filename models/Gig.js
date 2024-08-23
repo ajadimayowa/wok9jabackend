@@ -9,15 +9,12 @@ const GigSchema = new mongoose.Schema({
     gigImages: {
         type: [String],
     },
-    gigCategory: { type: String, require: true },
-    price: {
-        type: Number,
-        require: true
-    },
+    gigCategoryId: { type: String, required: true },
     creatorFullName: { type: String, required: true },
     creatorPhoneNumber: { type: Number, required: true },
     creatorOfficeAddress: { type: String, required: true },
-    price: { type: Number, required: true },
+    sellerPrice: { type: Number, required: true },
+    basePrice: { type: Number, required: true },
     creatorId: { type: String, required: true },
     
 
